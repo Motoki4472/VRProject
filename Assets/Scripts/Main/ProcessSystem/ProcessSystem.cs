@@ -1,14 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Main.RuleSystem;
+using Main.Rule;
 
 namespace Main.ProcessSystem
 {
     public class ProcessSystem : MonoBehaviour
     {
         private Timer timer = default;
-        private Main.RuleSystem.RuleSystem ruleSystem = default;
+        private RuleSystem ruleSystem = default;
         private ProcessState processState = ProcessState.Initialize;
         public enum ProcessState
         {
@@ -53,7 +53,7 @@ namespace Main.ProcessSystem
         private void Initialize()
         {
             processState = ProcessState.PutBlock;
-            ruleSystem = new Main.RuleSystem.RuleSystem();
+            ruleSystem = new RuleSystem();
         }
 
         private void PutBlock()
