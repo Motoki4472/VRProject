@@ -5,17 +5,31 @@ using System.Linq;
 
 namespace Main.Block
 {
-    public class GenerateBlockGroup : MonoBehaviour
+    public class GenerateBlockGroup
     {
-        public GameObject[] blockPrefabList = new GameObject[]
+        public GameObject[] blockPrefabList;
+        public GenerateBlockGroup()
         {
-            // ID = 0:未使用
-            Resources.Load<GameObject>("Prefabs/Block/RedBlock"), // ID = 1:赤
-            Resources.Load<GameObject>("Prefabs/Block/BlueBlock"), // ID = 2:青
-            Resources.Load<GameObject>("Prefabs/Block/GreenBlock"), // ID = 3:緑
-            Resources.Load<GameObject>("Prefabs/Block/YellowBlock"), // ID = 4:黄
-            Resources.Load<GameObject>("Prefabs/Block/PurpleBlock"), // ID = 5:紫
-        };
+            // Prefabのロードとエラーチェック
+            blockPrefabList = new GameObject[]
+            {
+                LoadPrefab("Prefab/Block/RedBlock"), // ID = 1:赤
+                LoadPrefab("Prefab/Block/BlueBlock"), // ID = 2:青
+                LoadPrefab("Prefab/Block/GreenBlock"), // ID = 3:緑
+                LoadPrefab("Prefab/Block/YellowBlock"), // ID = 4:黄
+                LoadPrefab("Prefab/Block/PurpleBlock") // ID = 5:紫
+            };
+        }
+
+        private GameObject LoadPrefab(string path)
+        {
+            GameObject prefab = Resources.Load<GameObject>(path);
+            if (prefab == null)
+            {
+                Debug.LogError($"Failed to load prefab at path: {path}");
+            }
+            return prefab;
+        }
 
         public void GenerateBlock(int blockId, int x, int y, int z)
         {
@@ -26,11 +40,11 @@ namespace Main.Block
         public void GenerateBlockGroupObjects()
         {
             int[,,] blockGroupPattern = GenerateBlockGroupPattern();
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 2; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 2; j++)
                 {
-                    for (int k = 0; k < 3; k++)
+                    for (int k = 0; k < 2; k++)
                     {
                         if (blockGroupPattern[i, j, k] != 0)
                         {
@@ -44,114 +58,31 @@ namespace Main.Block
 
         public int[,,] GenerateBlockGroupPattern()
         {
-            int[,,] blockGroupPattern = new int[3, 3, 3]
+            int[,,] blockGroupPattern = new int[2, 2, 2]
             {
                 {
-                    { 0, 0, 0 },
-                    { 0, 0, 0 },
-                    { 0, 0, 0 }
+                    { 0, 0 },
+                    { 0, 0 }
                 },
                 {
-                    { 0, 0, 0 },
-                    { 0, 0, 0 },
-                    { 0, 0, 0 }
+                    { 0, 0 },
+                    { 0, 0 }
                 },
-                {
-                    { 0, 0, 0 },
-                    { 0, 0, 0 },
-                    { 0, 0, 0 }
-                }
             };
             int x = 1;
             int y = 1;
             int z = 1;
 
-            //[1,1,1]の中央からランダムな連続した1~3つのブロックを生成
-            blockGroupPattern[x, y, z] = Random.Range(1, 6);
-            for (int i = 0; i < Random.Range(1, 4); i++)
+            for(int i = 0;i < 3;i++)
             {
-                (blockGroupPattern, x, y, z) = SearchBlockPattern(blockGroupPattern, x, y, z);
+                x = Random.Range(0, 2);
+                y = Random.Range(0, 2);
+                z = Random.Range(0, 2);
+                blockGroupPattern[x, y, z] = Random.Range(1, 6);
             }
-
-            var flatList = blockGroupPattern.Cast<int>().ToList();
-            int maxCount = flatList.GroupBy(val => val).Max(group => group.Count());
-            if (maxCount >= 4)
-            {
-                blockGroupPattern = GenerateBlockGroupPattern();
-            }
-
 
             return blockGroupPattern;
-        }
-
-        private (int[,,], int, int, int) SearchBlockPattern(int[,,] blockGroupPattern, int x, int y, int z)
-        {
-            int direction = Random.Range(0, 6);
-            switch (direction)
-            {
-                case 0:
-                    if (x + 1 < 3)
-                    {
-                        x++;
-                    }
-                    else
-                    {
-                        x--;
-                    }
-                    break;
-                case 1:
-                    if (x - 1 >= 0)
-                    {
-                        x--;
-                    }
-                    else
-                    {
-                        x++;
-                    }
-                    break;
-                case 2:
-                    if (y + 1 < 3)
-                    {
-                        y++;
-                    }
-                    else
-                    {
-                        y--;
-                    }
-                    break;
-                case 3:
-                    if (y - 1 >= 0)
-                    {
-                        y--;
-                    }
-                    else
-                    {
-                        y++;
-                    }
-                    break;
-                case 4:
-                    if (z + 1 < 3)
-                    {
-                        z++;
-                    }
-                    else
-                    {
-                        z--;
-                    }
-                    break;
-                case 5:
-                    if (z - 1 >= 0)
-                    {
-                        z--;
-                    }
-                    else
-                    {
-                        z++;
-                    }
-                    break;
-            }
-            blockGroupPattern[x, y, z] = Random.Range(1, 6);
-            return (blockGroupPattern, x, y, z);
+        
         }
     }
 }
