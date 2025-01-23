@@ -8,9 +8,10 @@ namespace Main.Block
     public class GenerateBlockGroup
     {
         public GameObject[] blockPrefabList;
-        public GenerateBlockGroup()
+        GameObject blockGroup;
+        public bool[] useBlock = new bool[5];
+        public GenerateBlockGroup(GameObject blockGroup)
         {
-            // Prefabのロードとエラーチェック
             blockPrefabList = new GameObject[]
             {
                 LoadPrefab("Prefab/Block/RedBlock"), // ID = 1:赤
@@ -33,12 +34,24 @@ namespace Main.Block
 
         public void GenerateBlock(int blockId, int x, int y, int z)
         {
-            GameObject obj = GameObject.Instantiate(blockPrefabList[blockId - 1], new Vector3(x, y, z), Quaternion.identity);
+            GameObject obj = GameObject.Instantiate(blockPrefabList[blockId - 1], new Vector3(x, y + 10, z), Quaternion.identity);
             var block = obj.GetComponent<Block>();
+            block.SetActive();
+            // ブロックグループの座標をリセット
+            blockGroup.transform.position = new Vector3(0, 12, 0);
+            // ブロックをブロックグループの子オブジェクトにする
+            obj.transform.SetParent(blockGroup.transform);
+        }
+
+        public GameObject GenerateBlockGroupGameObject()
+        {
+            return blockGroup;
         }
 
         public void GenerateBlockGroupObjects()
         {
+            useBlock = new bool[5];
+            blockGroup = new GameObject("BlockGroup");
             int[,,] blockGroupPattern = GenerateBlockGroupPattern();
             for (int i = 0; i < 2; i++)
             {
@@ -49,11 +62,13 @@ namespace Main.Block
                         if (blockGroupPattern[i, j, k] != 0)
                         {
                             GenerateBlock(blockGroupPattern[i, j, k], i, j, k);
-                            // 座標は要検証
+                            // ブロックの使用状況を更新
+                            useBlock[blockGroupPattern[i, j, k] - 1] = true;
                         }
                     }
                 }
             }
+
         }
 
         public int[,,] GenerateBlockGroupPattern()
@@ -73,7 +88,7 @@ namespace Main.Block
             int y = 1;
             int z = 1;
 
-            for(int i = 0;i < 3;i++)
+            for (int i = 0; i < 3; i++)
             {
                 x = Random.Range(0, 2);
                 y = Random.Range(0, 2);
@@ -82,7 +97,13 @@ namespace Main.Block
             }
 
             return blockGroupPattern;
-        
+
+        }
+        public bool[] GetuseBlock()
+        {
+            return useBlock;
         }
     }
+
+
 }
