@@ -7,22 +7,18 @@ namespace Main.Rule
     public class PutBlockSystem
     {
         [SerializeField] private RuleSystem ruleSystem = default;
-        [SerializeField] private GameObject PlacementDeterminationPrefab = default;
         private int[,] TopBlock = new int[4, 4];
+        private GameObject[,] gameObjects = new GameObject[4, 4];
 
-        public PutBlockSystem(RuleSystem ruleSystem)
+        public PutBlockSystem(RuleSystem ruleSystem, GameObject[,] PlacementDeterminationPrefab)
         {
             this.ruleSystem = ruleSystem;
+            this.gameObjects = PlacementDeterminationPrefab;
         }
 
-        public void ReloardlacementDetermination()
+
+        public void ReloardPlacementDetermination()
         {
-            // 一度全てのPlacementDeterminationを削除
-            GameObject[] objs = GameObject.FindGameObjectsWithTag("PlacementDetermination");
-            foreach (var obj in objs)
-            {
-                GameObject.Destroy(obj);
-            }
             TopBlock = ruleSystem.CheckTopBlock();
             // Gridの座標でそれぞれのブロックの上にブロックを設置するためのオブジェクトを生成
             for (int i = 0; i < 4; i++)
@@ -31,17 +27,16 @@ namespace Main.Rule
                 {
                     if (TopBlock[i, j] < 10)
                     {
-                        GameObject obj = GameObject.Instantiate(PlacementDeterminationPrefab, new Vector3(i, j, TopBlock[i, j]), Quaternion.identity);
-                        var placementDetermination = obj.GetComponent<PlacementDetermination>();
-                        if (placementDetermination != null)
-                        {
-                            placementDetermination.Initialize(i, j, TopBlock[i, j] + 1, ruleSystem);
-                        }
-                        // 座標は要検証
+                        gameObjects[i,j].GetComponent<PlacementDetermination>().MovePlacementDetermination(i, j, TopBlock[i, j]);
                     }
                 }
             }
-
         }
+
+        public void FallPlacementDetermination(int x, int y)
+        {
+            gameObjects[x, y].GetComponent<PlacementDetermination>().Fall();
+        }
+
     }
 }

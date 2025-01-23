@@ -7,11 +7,12 @@ public class test : MonoBehaviour
 {
 
     private GenerateBlockGroup genarateBlockGroup = default;
-    private int i = 1;
+    private BlockGroup blockGroupSC = default; // ブロックグループのスクリプト
+    [SerializeField] GameObject blockGroup = default;
     // Start is called before the first frame update
     void Start()
     {
-        genarateBlockGroup = new GenerateBlockGroup();
+        genarateBlockGroup = new GenerateBlockGroup(blockGroup);
     }
 
     // Update is called once per frame
@@ -21,8 +22,23 @@ public class test : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space)){
         
             genarateBlockGroup.GenerateBlockGroupObjects();
-            i++;
+            blockGroupSC = new BlockGroup(genarateBlockGroup.GenerateBlockGroupGameObject());
 
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow)){
+            blockGroupSC.HorizontalXMove();
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow)){
+            blockGroupSC.HorizontalZMove();
+        }
+        if (Input.GetKeyDown(KeyCode.UpArrow)){
+            blockGroupSC.HorizontalClockwiseRotation();
+        }
+        if (Input.GetKeyDown(KeyCode.DownArrow)){
+            blockGroupSC.PutDown();
+        }
+        if (Input.GetKeyDown(KeyCode.R)){
+            blockGroupSC.Reset();
         }
 
     }
