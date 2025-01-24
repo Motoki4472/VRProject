@@ -69,6 +69,14 @@ namespace Main.Block
             this.GetComponent<Renderer>().material = materials[materialId];
         }
 
+        public void ActiveorInActiveChildren(bool active)
+        {
+            foreach (Transform child in this.transform)
+            {
+                child.gameObject.SetActive(active);
+            }
+        }
+
     }
 }
 

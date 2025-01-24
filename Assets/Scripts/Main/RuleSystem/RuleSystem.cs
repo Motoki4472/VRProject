@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 using Main.Block;
 
@@ -41,6 +42,7 @@ namespace Main.Rule
                 }
             }
             putBlockSystem = new PutBlockSystem(this, gameObjects);
+            
         }
 
         public void DeleteBlockProcess()
@@ -239,6 +241,11 @@ namespace Main.Rule
         public GameObject[,,] GetBlockObjects()
         {
             return BlockObjects;
+        }
+
+        public int GetScore()
+        {
+            return Score;
         }
 
         // 終了判定

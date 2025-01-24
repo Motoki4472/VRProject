@@ -43,3 +43,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Maker
+    uniqueID: 3926061059
+    locked: 0

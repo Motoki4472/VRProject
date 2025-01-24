@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: YellowBlock
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-  m_Parent: {fileID: 2100000, guid: 17d008876220c044ba5e99f44712c492, type: 2}
+  m_Parent: {fileID: 2100000, guid: 16a1c0a57c18c054090ea2343a02ae16, type: 2}
   m_ModifiedSerializedProperties: 16
   m_ValidKeywords:
   - _ALPHABLEND_ON

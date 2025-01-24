@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Main.Block;
 using Main.Player;
 
@@ -17,6 +18,7 @@ namespace Main.Rule
         [SerializeField] GameObject player = default;
         private bool[] useBlock = new bool[5];
         private GameObject[,,] BlockObjects = new GameObject[4, 4, 10];
+        [SerializeField] private GameObject scoreText = default;
         public enum ProcessState
         {
             Initialize,
@@ -31,11 +33,13 @@ namespace Main.Rule
             timer = new Timer();
             timer.RunTimer();
             Initialize();
+
         }
 
         void Update()
         {
             timer.UpdateTimer();
+            scoreText.GetComponent<Text>().text = "Score:" + ruleSystem.GetScore().ToString();
 
             if (processState == ProcessState.EndJudgementProcessing)
             {
@@ -63,7 +67,8 @@ namespace Main.Rule
             player.GetComponent<Player.PlayerControls>().SetBrockGroup(blockGroupSC);
             useBlock = genarateBlockGroup.GetuseBlock();
             BlockObjects = ruleSystem.GetBlockObjects();
-            //ChangeBlockMaterial();
+            ChangeBlockMaterial();
+            ChangeBlockChildrenObject();
         }
 
         public void PostPlacementProcessing()
@@ -108,13 +113,36 @@ namespace Main.Rule
                     var blockComponent = block.GetComponent<Block.Block>();
                     if (blockComponent != null)
                     {
-                        if (useBlock[blockComponent.GetBlockId()-1] == false)
+                        if (useBlock[blockComponent.GetBlockId() - 1] == false)
                         {
                             blockComponent.SetMaterial(1); // 透過
                         }
                         else
                         {
                             blockComponent.SetMaterial(0); // 通常
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ChangeBlockChildrenObject()
+        {
+            // ブロックの子オブジェクトを変更
+            foreach (var block in BlockObjects)
+            {
+                if (block != null)
+                {
+                    var blockComponent = block.GetComponent<Block.Block>();
+                    if (blockComponent != null)
+                    {
+                        if (useBlock[blockComponent.GetBlockId() - 1] == false)
+                        {
+                            blockComponent.ActiveorInActiveChildren(false); // 強調表示
+                        }
+                        else
+                        {
+                            blockComponent.ActiveorInActiveChildren(true); // 表示削除
                         }
                     }
                 }
